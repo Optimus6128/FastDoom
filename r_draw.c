@@ -179,7 +179,7 @@ void R_DrawSpanPotato(void)
     } while (countp--);
 }
 
-void R_DrawColumnFlat(void)
+void R_DrawColumnFlat(int planeOffset)
 {
     int count;
     byte *dest;
@@ -187,7 +187,7 @@ void R_DrawColumnFlat(void)
 
     count = dc_yh - dc_yl;
 
-    dest = destview + Mul80(dc_yl) + (dc_x >> 2);
+    dest = destview + Mul80(dc_yl) + (dc_x >> 2) + planeOffset;
 
     color = dc_flatcolor;
 
@@ -199,7 +199,7 @@ void R_DrawColumnFlat(void)
     } while (count--);
 }
 
-void R_DrawColumnFlatLow(void)
+void R_DrawColumnFlatLow(int planeOffset)
 {
     int count;
     byte *dest;
@@ -207,7 +207,7 @@ void R_DrawColumnFlatLow(void)
 
     count = dc_yh - dc_yl;
 
-    dest = destview + Mul80(dc_yl) + (dc_x >> 1);
+    dest = destview + Mul80(dc_yl) + (dc_x >> 1) + planeOffset;
 
     color = dc_flatcolor;
 

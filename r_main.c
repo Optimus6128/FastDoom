@@ -36,6 +36,8 @@
 
 #define SC_INDEX 0x3C4
 
+static byte offscreenView[64000];
+
 // increment every time a check is made
 int validcount = 1;
 
@@ -984,7 +986,36 @@ void R_SetupFrame(player_t *player)
 
     framecount++;
     validcount++;
-    destview = destscreen + Mul80(viewwindowy) + (viewwindowx >> 2);
+    destview = offscreenView + Mul80(viewwindowy) + (viewwindowx >> 2);     // point destview to the offscreen buffer instead of vram
+}
+
+void R_CopyOffscreenBufferToVram()
+{
+    int n;
+    const int planesNum = 4 >> detailshift;
+    for (n=0; n<planesNum; ++n) {
+        int y;
+        byte *src = destview + 16000 * n;
+        byte *dst = destscreen + Mul80(viewwindowy) + (viewwindowx >> 2);
+        const int dwordWidth = scaledviewwidth >> 4;
+
+        switch(detailshift) {
+            case 0:
+                outp(SC_INDEX + 1, 1 << n);
+            break;
+            
+            case 1:
+                outp(SC_INDEX + 1, 3 << (n << 1));
+            break;
+        }
+
+        for (y=0; y<viewheight; ++y) {
+            CopyDWords(src, dst, dwordWidth);
+            src += 80;
+            dst += 80;
+        }
+    }
+    destview = destscreen + Mul80(viewwindowy) + (viewwindowx >> 2);    // restore destview to the original vram pointer
 }
 
 //
@@ -1023,4 +1054,6 @@ void R_RenderPlayerView(player_t *player)
 
     // Check for new console commands.
     NetUpdate();
+
+    R_CopyOffscreenBufferToVram();
 }

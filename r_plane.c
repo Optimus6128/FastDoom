@@ -395,6 +395,7 @@ void R_DrawPlanes(void)
 
         if (flatSurfaces)
         {
+            int planeOffset;
             //dc_iscale = pspriteiscale >> detailshift;
             dc_colormap = colormaps;
 
@@ -409,7 +410,9 @@ void R_DrawPlanes(void)
             case 0:
                 // Plane 0
                 x = pl->minx;
-                outp(SC_INDEX + 1, 1 << (x & 3));
+
+                //outp(SC_INDEX + 1, 1 << (x & 3));
+                planeOffset = 16000 * (x & 3);
 
                 do
                 {
@@ -425,7 +428,7 @@ void R_DrawPlanes(void)
                     dc_x = x;
                     x += 4;
 
-                    R_DrawColumnFlat();
+                    R_DrawColumnFlat(planeOffset);
                 } while (x <= pl->maxx);
 
                 // Plane 1
@@ -434,7 +437,8 @@ void R_DrawPlanes(void)
                 if (x > pl->maxx)
                     continue;
 
-                outp(SC_INDEX + 1, 1 << (x & 3));
+                //outp(SC_INDEX + 1, 1 << (x & 3));
+                planeOffset = 16000 * (x & 3);
 
                 do
                 {
@@ -450,7 +454,7 @@ void R_DrawPlanes(void)
                     dc_x = x;
                     x += 4;
 
-                    R_DrawColumnFlat();
+                    R_DrawColumnFlat(planeOffset);
                 } while (x <= pl->maxx);
 
                 // Plane 2
@@ -459,7 +463,8 @@ void R_DrawPlanes(void)
                 if (x > pl->maxx)
                     continue;
 
-                outp(SC_INDEX + 1, 1 << (x & 3));
+                //outp(SC_INDEX + 1, 1 << (x & 3));
+                planeOffset = 16000 * (x & 3);
 
                 do
                 {
@@ -475,7 +480,7 @@ void R_DrawPlanes(void)
                     dc_x = x;
                     x += 4;
 
-                    R_DrawColumnFlat();
+                    R_DrawColumnFlat(planeOffset);
                 } while (x <= pl->maxx);
 
                 // Plane 3
@@ -484,7 +489,8 @@ void R_DrawPlanes(void)
                 if (x > pl->maxx)
                     continue;
 
-                outp(SC_INDEX + 1, 1 << (x & 3));
+                //outp(SC_INDEX + 1, 1 << (x & 3));
+                planeOffset = 16000 * (x & 3);
 
                 do
                 {
@@ -500,14 +506,16 @@ void R_DrawPlanes(void)
                     dc_x = x;
                     x += 4;
 
-                    R_DrawColumnFlat();
+                    R_DrawColumnFlat(planeOffset);
                 } while (x <= pl->maxx);
 
                 break;
             case 1:
                 // Plane 0
                 x = pl->minx;
-                outp(SC_INDEX + 1, 3 << ((x & 1) << 1));
+
+                //outp(SC_INDEX + 1, 3 << ((x & 1) << 1));
+                planeOffset = 16000 * (x & 1);
 
                 do
                 {
@@ -523,7 +531,7 @@ void R_DrawPlanes(void)
                     dc_x = x;
                     x += 2;
 
-                    R_DrawColumnFlatLow();
+                    R_DrawColumnFlatLow(planeOffset);
                 } while (x <= pl->maxx);
 
                 // Plane 1
@@ -532,7 +540,8 @@ void R_DrawPlanes(void)
                 if (x > pl->maxx)
                     continue;
 
-                outp(SC_INDEX + 1, 3 << ((x & 1) << 1));
+                //outp(SC_INDEX + 1, 3 << ((x & 1) << 1));
+                planeOffset = 16000 * (x & 1);
 
                 do
                 {
@@ -548,7 +557,7 @@ void R_DrawPlanes(void)
                     dc_x = x;
                     x += 2;
 
-                    R_DrawColumnFlatLow();
+                    R_DrawColumnFlatLow(planeOffset);
                 } while (x <= pl->maxx);
 
                 break;

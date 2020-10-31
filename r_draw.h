@@ -48,8 +48,8 @@ void R_DrawFuzzColumnFast(void);
 void R_DrawColumnPotato(void);
 void R_DrawSkyFlatPotato(void);
 
-void R_DrawColumnFlat(void);
-void R_DrawColumnFlatLow(void);
+void R_DrawColumnFlat(int planeOffset);
+void R_DrawColumnFlatLow(int planeOffset);
 void R_DrawColumnFlatPotato(void);
 
 void R_VideoErase(unsigned ofs,
