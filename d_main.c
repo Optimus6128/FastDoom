@@ -238,7 +238,7 @@ void D_Display(void)
         if (automapactive)
         {
             // [crispy] update automap while playing
-            R_RenderPlayerView(&players);
+            //R_RenderPlayerView(&players);
             AM_Drawer();
         }
         if (wipe || (viewheight != 200 && fullscreen))

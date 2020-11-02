@@ -36,7 +36,7 @@
 
 #define SC_INDEX 0x3C4
 
-static byte offscreenView[64000];
+static byte offscreenView[65536];	// should be 64000, but sacrifice space to avoid MUL i * 16000 and do i << 14 instead
 
 // increment every time a check is made
 int validcount = 1;
@@ -995,7 +995,7 @@ void R_CopyOffscreenBufferToVram()
     const int planesNum = 4 >> detailshift;
     for (n=0; n<planesNum; ++n) {
         int y;
-        byte *src = destview + 16000 * n;
+        byte *src = destview + (n << 14);
         byte *dst = destscreen + Mul80(viewwindowy) + (viewwindowx >> 2);
         const int dwordWidth = scaledviewwidth >> 4;
 

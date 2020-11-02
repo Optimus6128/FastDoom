@@ -66,12 +66,14 @@ PUBLIC  R_DrawColumnLow_
 	shr		ebx,1
 	add		edi,ebx
 	add		edi,[_destview]
-	and 	ecx,1
-	shl		ecx,1
-	mov		eax,3
-	shl		eax,cl
-	mov		edx,SC_INDEX+1
-	out		dx,al
+	and		ecx,1
+	shl		ecx,14
+	add		edi,ecx
+	;shl		ecx,1
+	;mov		eax,3
+	;shl		eax,cl
+	;mov		edx,SC_INDEX+1
+	;out		dx,al
 	jmp		cdraw
 ENDP
 	
@@ -89,10 +91,12 @@ PUBLIC  R_DrawColumn_
 	add		edi,ebx
 	add		edi,[_destview]
 	and		ecx,3
-	mov		eax,1
-	shl		eax,cl
-	mov		edx,SC_INDEX+1
-	out		dx,al
+	shl		ecx,14
+	add		edi,ecx
+	;mov		eax,1
+	;shl		eax,cl
+	;mov		edx,SC_INDEX+1
+	;out		dx,al
 cdraw:
 	mov		eax,[_dc_yh]
 	inc		eax
@@ -233,12 +237,12 @@ PUBLIC	R_DrawSpan_
 	mov		[eax],ebx
 	mov		eax,OFFSET hpatch2+2
 	mov		[eax],ebx
-	mov		ecx,[curplane]
+	;mov		ecx,[curplane]
 hplane:
-	mov		eax,1
-	shl		eax,cl
-	mov		edx,SC_INDEX+1
-	out		dx,al
+	;mov		eax,1
+	;shl		eax,cl
+	;mov		edx,SC_INDEX+1
+	;out		dx,al
 	mov		eax,[_ds_x2]
 	cmp		eax,[curx]
 	jb		hdone
@@ -264,6 +268,9 @@ hplane:
 	mov		ebx,eax
 	mov		esi,[_ds_source]
 	mov		edi,[dest]
+	mov		ecx,[curplane]
+	shl		ecx,14
+	add		edi,ecx
 	mov		ebp,[frac]
 	test	[curpx],1
 	jz		hfill
@@ -295,6 +302,9 @@ hfillone:
 	mov		eax,[_ds_colormap]
 	mov		esi,[_ds_source]
 	mov		edi,[dest]
+	mov		ecx,[curplane]
+	shl		ecx,14
+	add		edi,ecx
 	mov		ebp,[frac]
 	shld	ecx,ebp,22
 	shld	ecx,ebp,6
@@ -389,13 +399,13 @@ PUBLIC	R_DrawSpanLow_
 	mov		[eax],ebx
 	mov		eax,OFFSET lpatch2+2
 	mov		[eax],ebx
-	mov		ecx,[curplane]
+	;mov		ecx,[curplane]
 lplane:
-	mov		eax,3
-	shl		eax,cl
-	shl		eax,cl
-	mov		edx,SC_INDEX+1
-	out		dx,al
+	;mov		eax,3
+	;shl		eax,cl
+	;shl		eax,cl
+	;mov		edx,SC_INDEX+1
+	;out		dx,al
 	mov		eax,[_ds_x2]
 	cmp		eax,[curx]
 	jb		ldone
@@ -421,6 +431,9 @@ lplane:
 	mov		ebx,eax
 	mov		esi,[_ds_source]
 	mov		edi,[dest]
+	mov		ecx,[curplane]
+	shl		ecx,14
+	add		edi,ecx
 	mov		ebp,[frac]
 	test	[curpx],1
 	jz		lfill
@@ -452,6 +465,9 @@ lfillone:
 	mov		eax,[_ds_colormap]
 	mov		esi,[_ds_source]
 	mov		edi,[dest]
+	mov		ecx,[curplane]
+	shl		ecx,14
+	add		edi,ecx
 	mov		ebp,[frac]
 	shld	ecx,ebp,22
 	shld	ecx,ebp,6

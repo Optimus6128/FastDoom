@@ -103,9 +103,10 @@ void R_DrawSkyFlat(void)
 
     count = dc_yh - dc_yl;
 
-    outp(SC_INDEX + 1, 1 << (dc_x & 3));
+    //outp(SC_INDEX + 1, 1 << (dc_x & 3));
+	
 
-    dest = destview + Mul80(dc_yl) + (dc_x >> 2);
+    dest = destview + Mul80(dc_yl) + (dc_x >> 2) + ((dc_x & 3) << 14);
 
     do
     {
@@ -121,9 +122,9 @@ void R_DrawSkyFlatLow(void)
 
     count = dc_yh - dc_yl;
 
-    outp(SC_INDEX + 1, 3 << ((dc_x & 1) << 1));
+    //outp(SC_INDEX + 1, 3 << ((dc_x & 1) << 1));
 
-    dest = destview + Mul80(dc_yl) + (dc_x >> 1);
+    dest = destview + Mul80(dc_yl) + (dc_x >> 1) + ((dc_x & 1) << 14);
 
     do
     {
@@ -287,14 +288,14 @@ void R_DrawFuzzColumn(void)
     switch (detailshift)
     {
     case 0:
-        outpw(GC_INDEX, GC_READMAP + ((dc_x & 3) << 8));
-        outp(SC_INDEX + 1, 1 << (dc_x & 3));
-        dest += (dc_x >> 2);
+        //outpw(GC_INDEX, GC_READMAP + ((dc_x & 3) << 8));
+        //outp(SC_INDEX + 1, 1 << (dc_x & 3));
+        dest += (dc_x >> 2) + ((dc_x & 3) << 14);
         break;
     case 1:
-        outpw(GC_INDEX, GC_READMAP + ((dc_x & 1) << 9));
-        outp(SC_INDEX + 1, 3 << ((dc_x & 1) << 1));
-        dest += (dc_x >> 1);
+        //outpw(GC_INDEX, GC_READMAP + ((dc_x & 1) << 9));
+        //outp(SC_INDEX + 1, 3 << ((dc_x & 1) << 1));
+        dest += (dc_x >> 1) + ((dc_x & 1) << 14);
         break;
     case 2:
         dest += dc_x;
@@ -310,7 +311,7 @@ void R_DrawFuzzColumn(void)
         //  a pixel that is either one column
         //  left or right of the current one.
         // Add index from colormap to index.
-        *dest = colormaps[6 * 256 + dest[fuzzoffset[fuzzpos]]];
+        *dest ^= colormaps[6 * 256 + dest[fuzzoffset[fuzzpos]]];
 
         // Clamp table lookup index.
         if (++fuzzpos == FUZZTABLE)
@@ -332,14 +333,14 @@ void R_DrawFuzzColumnFast(void)
     switch (detailshift)
     {
     case 0:
-        outpw(GC_INDEX, GC_READMAP + ((dc_x & 3) << 8));
-        outp(SC_INDEX + 1, 1 << (dc_x & 3));
-        dest += (dc_x >> 2);
+        //outpw(GC_INDEX, GC_READMAP + ((dc_x & 3) << 8));
+        //outp(SC_INDEX + 1, 1 << (dc_x & 3));
+        dest += (dc_x >> 2) + ((dc_x & 3) << 14);;
         break;
     case 1:
-        outpw(GC_INDEX, GC_READMAP + ((dc_x & 1) << 9));
-        outp(SC_INDEX + 1, 3 << ((dc_x & 1) << 1));
-        dest += (dc_x >> 1);
+        //outpw(GC_INDEX, GC_READMAP + ((dc_x & 1) << 9));
+        //outp(SC_INDEX + 1, 3 << ((dc_x & 1) << 1));
+        dest += (dc_x >> 1) + ((dc_x & 1) << 14);;
         break;
     case 2:
         dest += dc_x;
@@ -355,7 +356,7 @@ void R_DrawFuzzColumnFast(void)
         //  a pixel that is either one column
         //  left or right of the current one.
         // Add index from colormap to index.
-        *dest = colormaps[6 * 256 + dest[0]];
+        *dest ^= colormaps[6 * 256 + dest[0]];
 
         dest += SCREENWIDTH / 4;
     } while (count--);
@@ -382,12 +383,12 @@ void R_DrawFuzzColumnSaturn(void)
     switch (detailshift)
     {
     case 0:
-        outp(SC_INDEX + 1, 1 << (dc_x & 3));
-        dest += (dc_x >> 2);
+        //outp(SC_INDEX + 1, 1 << (dc_x & 3));
+        dest += (dc_x >> 2) + ((dc_x & 3) << 14);
         break;
     case 1:
-        outp(SC_INDEX + 1, 3 << ((dc_x & 1) << 1));
-        dest += (dc_x >> 1);
+        //outp(SC_INDEX + 1, 3 << ((dc_x & 1) << 1));
+        dest += (dc_x >> 1) + ((dc_x & 1) << 14);
         break;
     case 2:
         dest += dc_x;
@@ -502,12 +503,17 @@ void R_DrawSpanFlat(void)
         countp = dsm_x2 - dsm_x1;
         dest = (byte *)origin_y + dsm_x1;
 
-        outp(SC_INDEX + 1, 15);
+        //outp(SC_INDEX + 1, 15);
 
-        do
+        /*do
         {
             *dest++ = color;
-        } while (countp--);
+        } while (countp--);*/
+		++countp;
+		SetBytes(dest, color, countp);
+		SetBytes(dest+16384, color, countp);
+		SetBytes(dest+2*16384, color, countp);
+		SetBytes(dest+3*16384, color, countp);
     }
 
     // Single pixel mode
@@ -522,7 +528,7 @@ void R_DrawSpanFlat(void)
     if (dsp_x2 > dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 1 << 0);
+        //outp(SC_INDEX + 1, 1 << 0);
         *dest = color;
         dest = (byte *)origin_y + dsp_x2;
         *dest = color;
@@ -531,7 +537,7 @@ void R_DrawSpanFlat(void)
     if (dsp_x2 == dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 1 << 0);
+        //outp(SC_INDEX + 1, 1 << 0);
         *dest = color;
     }
 
@@ -542,10 +548,11 @@ void R_DrawSpanFlat(void)
 
     dsp_x2 = (ds_x2 - 1) / 4;
 
+	origin_y += 16384;
     if (dsp_x2 > dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 1 << 1);
+        //outp(SC_INDEX + 1, 1 << 1);
         *dest = color;
         dest = (byte *)origin_y + dsp_x2;
         *dest = color;
@@ -554,7 +561,7 @@ void R_DrawSpanFlat(void)
     if (dsp_x2 == dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 1 << 1);
+        //outp(SC_INDEX + 1, 1 << 1);
         *dest = color;
     }
 
@@ -565,10 +572,11 @@ void R_DrawSpanFlat(void)
 
     dsp_x2 = (ds_x2 - 2) / 4;
 
+	origin_y += 16384;
     if (dsp_x2 > dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 1 << 2);
+        //outp(SC_INDEX + 1, 1 << 2);
         *dest = color;
         dest = (byte *)origin_y + dsp_x2;
         *dest = color;
@@ -577,7 +585,7 @@ void R_DrawSpanFlat(void)
     if (dsp_x2 == dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 1 << 2);
+        //outp(SC_INDEX + 1, 1 << 2);
         *dest = color;
     }
 
@@ -588,10 +596,11 @@ void R_DrawSpanFlat(void)
 
     dsp_x2 = (ds_x2 - 3) / 4;
 
+	origin_y += 16384;
     if (dsp_x2 > dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 1 << 3);
+        //outp(SC_INDEX + 1, 1 << 3);
         *dest = color;
         dest = (byte *)origin_y + dsp_x2;
         *dest = color;
@@ -600,7 +609,7 @@ void R_DrawSpanFlat(void)
     if (dsp_x2 == dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 1 << 3);
+        //outp(SC_INDEX + 1, 1 << 3);
         *dest = color;
     }
 }
@@ -646,12 +655,15 @@ void R_DrawSpanFlatLow(void)
         countp = dsm_x2 - dsm_x1;
         dest = (byte *)origin_y + dsm_x1;
 
-        outp(SC_INDEX + 1, 15);
+        //outp(SC_INDEX + 1, 15);
 
-        do
+        /*do
         {
             *dest++ = color;
-        } while (countp--);
+        } while (countp--);*/
+		++countp;
+		SetBytes(dest, color, countp);
+		SetBytes(dest+16384, color, countp);
     }
 
     dsp_x1 = (ds_x1) / 2;
@@ -664,7 +676,7 @@ void R_DrawSpanFlatLow(void)
     if (dsp_x2 > dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 3 << 0);
+        //outp(SC_INDEX + 1, 3 << 0);
         *dest = color;
         dest = (byte *)origin_y + dsp_x2;
         *dest = color;
@@ -673,7 +685,7 @@ void R_DrawSpanFlatLow(void)
     if (dsp_x2 == dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 3 << 0);
+        //outp(SC_INDEX + 1, 3 << 0);
         *dest = color;
     }
 
@@ -684,10 +696,11 @@ void R_DrawSpanFlatLow(void)
 
     dsp_x2 = (ds_x2 - 1) / 2;
 
+	origin_y += 16384;
     if (dsp_x2 > dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 3 << 2);
+        //outp(SC_INDEX + 1, 3 << 2);
         *dest = color;
         dest = (byte *)origin_y + dsp_x2;
         *dest = color;
@@ -696,7 +709,7 @@ void R_DrawSpanFlatLow(void)
     if (dsp_x2 == dsp_x1)
     {
         dest = (byte *)origin_y + dsp_x1;
-        outp(SC_INDEX + 1, 3 << 2);
+        //outp(SC_INDEX + 1, 3 << 2);
         *dest = color;
     }
 }
@@ -712,10 +725,11 @@ void R_DrawSpanFlatPotato(void)
 
     dest = destview + Mul80(ds_y) + ds_x1;
 
-    do
+    /*do
     {
         *dest++ = color;
-    } while (countp--);
+    } while (countp--);*/
+	SetBytes(dest, color, countp+1);
 }
 
 //

@@ -412,7 +412,7 @@ void R_DrawPlanes(void)
                 x = pl->minx;
 
                 //outp(SC_INDEX + 1, 1 << (x & 3));
-                planeOffset = 16000 * (x & 3);
+                planeOffset = (x & 3) << 14;
 
                 do
                 {
@@ -438,7 +438,7 @@ void R_DrawPlanes(void)
                     continue;
 
                 //outp(SC_INDEX + 1, 1 << (x & 3));
-                planeOffset = 16000 * (x & 3);
+                planeOffset = (x & 3) << 14;
 
                 do
                 {
@@ -464,7 +464,7 @@ void R_DrawPlanes(void)
                     continue;
 
                 //outp(SC_INDEX + 1, 1 << (x & 3));
-                planeOffset = 16000 * (x & 3);
+                planeOffset = (x & 3) << 14;
 
                 do
                 {
@@ -490,7 +490,7 @@ void R_DrawPlanes(void)
                     continue;
 
                 //outp(SC_INDEX + 1, 1 << (x & 3));
-                planeOffset = 16000 * (x & 3);
+                planeOffset = (x & 3) << 14;
 
                 do
                 {
@@ -515,7 +515,7 @@ void R_DrawPlanes(void)
                 x = pl->minx;
 
                 //outp(SC_INDEX + 1, 3 << ((x & 1) << 1));
-                planeOffset = 16000 * (x & 1);
+                planeOffset = (x & 1) << 14;
 
                 do
                 {
@@ -541,7 +541,7 @@ void R_DrawPlanes(void)
                     continue;
 
                 //outp(SC_INDEX + 1, 3 << ((x & 1) << 1));
-                planeOffset = 16000 * (x & 1);
+                planeOffset = (x & 1) << 14;
 
                 do
                 {
